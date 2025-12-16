@@ -1,0 +1,31 @@
+name: Controllo Compleanni Giornaliero
+
+on:
+  schedule:
+    # Esegue ogni giorno alle 07:00 UTC (che sono le 08:00 o 09:00 in Italia a seconda dell'ora legale)
+    - cron: '0 7 * * *'
+  # Questo serve per poterlo avviare a mano quando vuoi per testare se funziona
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Scarica il codice (Checkout)
+        uses: actions/checkout@v3
+
+      - name: Imposta Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Installa le librerie
+        run: |
+          pip install -r requirements.txt
+
+      - name: Esegui lo script
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        run: python main.py
